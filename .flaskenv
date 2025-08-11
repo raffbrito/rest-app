@@ -1,2 +1,2 @@
 FLASK_APP=app
-FLASK_NEW=development
+FLASK_DEBUG=1

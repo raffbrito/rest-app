@@ -188,7 +188,7 @@ class User(MethodView):
                 ),
             )
 
-        return UserModel.query.get_or_404(user_id)
+        return db.get_or_404(UserModel, user_id)
 
     @jwt_required(fresh=True)
     def delete(self, user_id):
@@ -200,7 +200,7 @@ class User(MethodView):
                 ),
             )
 
-        user = UserModel.query.get_or_404(user_id)
+        user = db.get_or_404(UserModel, user_id)
 
         try:
             db.session.delete(user)

@@ -20,7 +20,7 @@ class TagsInStore(MethodView):
 
     @blp.response(200, TagSchema(many=True))
     def get(self, store_id):
-        store = StoreModel.query.get_or_404(store_id)
+        store = db.get_or_404(StoreModel, store_id)
 
         return store.tags
 
@@ -28,7 +28,7 @@ class TagsInStore(MethodView):
     @blp.arguments(TagCreateSchema)
     @blp.response(201, TagSchema)
     def post(self, tag_data, store_id):
-        StoreModel.query.get_or_404(store_id)
+        db.get_or_404(StoreModel, store_id)
 
         tag = TagModel(
             store_id=store_id,
@@ -60,8 +60,8 @@ class LinkTagToItem(MethodView):
     @jwt_required()
     @blp.response(200, TagSchema)
     def post(self, item_id, tag_id):
-        item = ItemModel.query.get_or_404(item_id)
-        tag = TagModel.query.get_or_404(tag_id)
+        item = db.get_or_404(ItemModel, item_id)
+        tag = db.get_or_404(TagModel, tag_id)
 
         if item.store_id != tag.store_id:
             abort(
@@ -97,8 +97,8 @@ class LinkTagToItem(MethodView):
     @jwt_required()
     @blp.response(200, TagAndItemSchema)
     def delete(self, item_id, tag_id):
-        item = ItemModel.query.get_or_404(item_id)
-        tag = TagModel.query.get_or_404(tag_id)
+        item = db.get_or_404(ItemModel, item_id)
+        tag = db.get_or_404(TagModel, tag_id)
 
         if tag not in item.tags:
             abort(
@@ -132,7 +132,7 @@ class TagById(MethodView):
 
     @blp.response(200, TagSchema)
     def get(self, tag_id):
-        return TagModel.query.get_or_404(tag_id)
+        return db.get_or_404(TagModel, tag_id)
 
     @jwt_required(fresh=True)
     @blp.response(
@@ -155,7 +155,7 @@ class TagById(MethodView):
         ),
     )
     def delete(self, tag_id):
-        tag = TagModel.query.get_or_404(tag_id)
+        tag = db.get_or_404(TagModel, tag_id)
 
         if tag.items:
             abort(

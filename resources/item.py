@@ -21,11 +21,11 @@ class Item(MethodView):
     @jwt_required()
     @blp.response(200, ItemSchema)
     def get(self, item_id):
-        return ItemModel.query.get_or_404(item_id)
+        return db.get_or_404(ItemModel, item_id)
 
     @jwt_required()
     def delete(self, item_id):
-        item = ItemModel.query.get_or_404(item_id)
+        item = db.get_or_404(ItemModel, item_id)
 
         try:
             db.session.delete(item)
@@ -43,10 +43,10 @@ class Item(MethodView):
     @blp.arguments(ItemUpdateSchema)
     @blp.response(200, ItemSchema)
     def put(self, item_data, item_id):
-        item = ItemModel.query.get_or_404(item_id)
+        item = db.get_or_404(ItemModel, item_id)
 
         if "store_id" in item_data:
-            StoreModel.query.get_or_404(item_data["store_id"])
+            db.get_or_404(StoreModel, item_data["store_id"])
 
         for key, value in item_data.items():
             setattr(item, key, value)
@@ -84,7 +84,7 @@ class ItemList(MethodView):
     @blp.arguments(ItemSchema)
     @blp.response(201, ItemSchema)
     def post(self, item_data):
-        StoreModel.query.get_or_404(item_data["store_id"])
+        db.get_or_404(StoreModel, item_data["store_id"])
 
         item = ItemModel(**item_data)
 
